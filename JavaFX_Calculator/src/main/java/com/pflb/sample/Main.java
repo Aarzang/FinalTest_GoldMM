@@ -1,26 +1,27 @@
 package com.pflb.sample;
 
+import com.pflb.helpers.controller.CalculatorWindowController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import com.pflb.helpers.controller.CalculatorWindowController;
+import java.io.File;
 
 import java.net.URL;
 
 
-public class Main extends Application {
+public class Main extends Application{
     Stage stage;
     private AnchorPane root;
 
-    private URL adress; //Пришлось захардкодить URL таблицы, поскольку getClass.getResource("CalculatorWindow.fxml") не желал находить ни при каких вводных.
+    private File MainWindow = new File("src/main/resources/fxml/CalculatorWindow.fxml");
+    private URL adress;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
 
-        adress = new URL("file:///C://Users/endless/Downloads/JavaFX_Calculator/src/main/java/com/pflb/sample/CalculatorWindow.fxml");
-
+        adress = new URL("file:///"  + MainWindow.getAbsolutePath());
         this.stage = primaryStage;
         FXMLLoader loader = new FXMLLoader(adress);
         root = loader.load();
@@ -28,6 +29,7 @@ public class Main extends Application {
         primaryStage.setTitle("Calculator application");
         primaryStage.show();
         primaryStage.setScene(new Scene(root, 600, 100));
+
     }
 
     public static void main(String[] args) {

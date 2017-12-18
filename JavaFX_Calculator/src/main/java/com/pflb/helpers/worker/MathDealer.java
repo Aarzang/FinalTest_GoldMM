@@ -1,20 +1,44 @@
 package com.pflb.helpers.worker;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.math.MathContext;
+import java.math.BigDecimal;
+import java.lang.NumberFormatException;
 
 public class MathDealer {
 
-    private static final String regExp = "[\\x00-\\x20]*[+-]?(((((\\p{Digit}+)(\\.)?((\\p{Digit}+)?)([eE][+-]?(\\p{Digit}+))?)|(\\.((\\p{Digit}+))([eE][+-]?(\\p{Digit}+))?)|(((0[xX](\\p{XDigit}+)(\\.)?)|(0[xX](\\p{XDigit}+)?(\\.)(\\p{XDigit}+)))[pP][+-]?(\\p{Digit}+)))[fFdD]?))[\\x00-\\x20]*";
-    private static final Pattern pattern = Pattern.compile(regExp);
+    private MathDealer(){};
 
-    public int checkNumbers(String dividend, String divider){
-        int numbersOk = 0;
-        Matcher first = pattern.matcher(dividend);
-        Matcher second = pattern.matcher(divider);
-        if(first.matches()&&second.matches()){
-            if(Double.parseDouble(divider)==0) numbersOk = 2;
-        }else numbersOk = 1;
-        return numbersOk;
+    public static BigDecimal checkNumbers(String dividend, String divider){
+        BigDecimal numbersResult;
+
+        double dividendDouble;
+        double dividerDouble;
+
+        try{
+            dividendDouble = Double.parseDouble(dividend);
+            dividerDouble = Double.parseDouble(divider);
+        }catch(NumberFormatException Ex){
+            numbersResult = new BigDecimal(0.0000000000000001);
+            return numbersResult;
+        }
+
+        if(Math.abs(dividendDouble) == Double.POSITIVE_INFINITY || Math.abs(dividerDouble) == Double.POSITIVE_INFINITY || Double.compare(dividendDouble, Double.NaN) == 0 || Double.compare(dividerDouble, Double.NaN) == 0) {
+            numbersResult = new BigDecimal(0.0000000000000001);
+            return numbersResult;
+        }
+        else
+            if(dividerDouble == 0D){
+                numbersResult = new BigDecimal(0.0000000000000002);
+                return numbersResult;
+            }
+            else
+                if(dividerDouble < 0D && dividendDouble == 0D) {
+                    numbersResult = new BigDecimal(0.0);
+                    return numbersResult;
+                }
+
+        numbersResult = new BigDecimal(dividendDouble/dividerDouble, MathContext.DECIMAL64);
+
+        return numbersResult;
     }
 }

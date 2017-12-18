@@ -5,6 +5,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import java.math.BigDecimal;
 
 import com.pflb.helpers.worker.MathDealer;
 
@@ -25,12 +26,8 @@ public class CalculatorWindowController {
     @FXML
     private Button mathButton;
 
-    private MathDealer checker = new MathDealer();
-
     private Stage dialogStage;
-    private double dividendNumber;
-    private double dividerNumber;
-    private double resultNumber;
+    private BigDecimal numbersResult;
 
 
     @FXML
@@ -42,20 +39,21 @@ public class CalculatorWindowController {
 
     @FXML
     public void handleMath() {
-        int numbersOk = checker.checkNumbers(dividendField.getText(),dividerField.getText());
+        this.numbersResult = MathDealer.checkNumbers(dividendField.getText(),dividerField.getText());
 
-        if(numbersOk==0){
-            this.dividendNumber = Double.parseDouble(dividendField.getText());
-            this.dividerNumber = Double.parseDouble(dividerField.getText());
-            this.resultNumber = dividendNumber/dividerNumber;
-            this.resultField.setText(Double.toString(resultNumber));
-            this.errorLabel.setText("MATH SUCCESSFUL");
-        }else {
+        if(numbersResult.compareTo(new BigDecimal(0.0000000000000001))==0) {
             this.resultField.setText("");
-            if (numbersOk==1)
-                this.errorLabel.setText("ERROR: UNACCEPTABLE TYPE");
-            else
+            this.errorLabel.setText("ERROR: UNACCEPTABLE INPUT");
+        }
+        else{
+            if(numbersResult.compareTo(new BigDecimal(0.0000000000000002))==0) {
+                this.resultField.setText("");
                 this.errorLabel.setText("ERROR: DIVIDING BY ZERO");
+            }
+            else{
+                this.resultField.setText(numbersResult.toString());
+                this.errorLabel.setText("MATH SUCCESSFUL");
+            }
         }
     }
 
